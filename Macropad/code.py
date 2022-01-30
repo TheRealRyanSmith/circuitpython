@@ -214,11 +214,25 @@ def xcode_colors():
     macropad.pixels[10] = (no_fill)
     macropad.pixels[11] = (no_fill)
 
+def template_colors():
+    macropad.pixels[0] = (blue)
+    macropad.pixels[1] = (blue)
+    macropad.pixels[2] = (blue)
+    macropad.pixels[3] = (red)
+    macropad.pixels[4] = (no_fill)
+    macropad.pixels[5] = (red)
+    macropad.pixels[6] = (cool_white)
+    macropad.pixels[7] = (cool_white)
+    macropad.pixels[8] = (cool_white)
+    macropad.pixels[9] = (no_fill)
+    macropad.pixels[10] = (no_fill)
+    macropad.pixels[11] = (red)
+
 #---BLINK FUNCTIONS---
 # Get a random color (redish-orange)
 def randomColor():
-    a = random.randint(225, 255)
-    b = random.randint(0, 50)
+    a = random.randint(255, 255)
+    b = random.randint(0, 100)
     c = random.randint(0, 0)
     return (a, b, c)
 
@@ -611,7 +625,7 @@ while True:
         sample_colors()
 
     # --- Blink  ---- ---- ---- ---- ---- ---- ---- ---- ---- ----
-    if current_position >= 7:
+    if current_position == 7:
         # Display and colors
         row1Label.text = "{}".format(macropad.encoder) + " Blink"
         row2Label.text = "."
@@ -625,7 +639,7 @@ while True:
             turnPixelsOff = False
         # Choose a random key/pixel and light up
         randomPixel()
-        time.sleep(0.4)
+        time.sleep(0.2)
         # Get a random pixel and turn it off
         a = random.randint(0, 11)
         macropad.pixels[a] = (0, 0, 0)
