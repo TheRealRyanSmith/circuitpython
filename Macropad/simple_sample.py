@@ -14,21 +14,20 @@ while True:
     key_event = macropad.keys.events.get()
     position = macropad.encoder
 
+    if key_event:
+        print(key_event)
     if key_event and key_event.pressed:
         if key_event.key_number == 0:
-            macropad.keyboard.press(macropad.Keycode.F12)
+            macropad.keyboard.press(macropad.Keycode.F15)
             macropad.keyboard.release_all()
-            print("Button press")
 
     if position > last_position:
-        macropad.keyboard.press(macropad.Keycode.F12)
         macropad.keyboard.release_all()
-        print("Fine volume up")
+        print("Dial position: ", position)
 
     if position < last_position:
-        macropad.keyboard.press(macropad.Keycode.F11)
         macropad.keyboard.release_all()
-        print("Fine volume down")
+        print("Dial position: ", position)
 
     time.sleep(0.3)
     last_position = position
