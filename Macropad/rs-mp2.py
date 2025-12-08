@@ -1,6 +1,5 @@
 # RS–MP2 // Second iteration of macropad
 import time
-import board
 import random
 import displayio
 import terminalio
@@ -10,9 +9,9 @@ from adafruit_macropad import MacroPad
 macropad = MacroPad()
 
 # ---Display setup--
-display = board.DISPLAY
+display = macropad.display
 main_group = displayio.Group()
-display.show(main_group)
+display.root_group = main_group
 
 # create the label
 row1Label = label.Label(font=terminalio.FONT, text="Ready", scale=1)
@@ -96,7 +95,7 @@ def pixels_off():
 def set_brightness_to(value):
     macropad.pixels.brightness = value
 
-set_brightness_to(0.25)
+set_brightness_to(0.05)
 
 # Example usage
 original_min = 0
@@ -126,42 +125,36 @@ while True:
 
     if current_key_set == 0:
         row1Label.text = "Select keyset  RS-MP1"
-        row2Label.text = "[ x ]  FIGMA"
+        row2Label.text = " ---   FIGMA"
         row3Label.text = "[ x ]  [ x ]  [ x ]"
         row4Label.text = "[ x ]  [ x ]  [ x ]"
         row5Label.text = "[ x ]  X4     MATRIX"
         sample_colors()
         if key_event:
             print(key_event)
-            if key_event.pressed:
-                if key_event.key_number == 0:
-                    current_key_set = 0
+            if key_event.released:
+                if 0 <= key_event.key_number <= 11:
                     macropad.keyboard.release_all()
-                if key_event.key_number == 1:
-                    current_key_set = 1
-                    macropad.keyboard.release_all()
-                if key_event.key_number == 10:
-                    current_key_set = 10
-                    macropad.keyboard.release_all()
-                if key_event.key_number == 11:
-                    current_key_set = 11
-                    macropad.keyboard.release_all()
-
+                    current_key_set = key_event.key_number
+                    
         current_encoder_position = macropad.encoder
+        
         if current_encoder_position > last_encoder_position:
-            macropad.keyboard.press(macropad.Keycode.OPTION, macropad.Keycode.SHIFT, macropad.Keycode.F12)
+            macropad.keyboard.press(macropad.Keycode.OPTION, macropad.Keycode.SHIFT)
+            macropad.keyboard.press(macropad.Keycode.F12)
             macropad.keyboard.release_all()
             print("Fine volume up")
         elif current_encoder_position < last_encoder_position:
-            macropad.keyboard.press(macropad.Keycode.OPTION, macropad.Keycode.SHIFT, macropad.Keycode.F11)
+            macropad.keyboard.press(macropad.Keycode.OPTION, macropad.Keycode.SHIFT)
+            macropad.keyboard.press(macropad.Keycode.F11)
             macropad.keyboard.release_all()
             print("Fine volume down")
         last_encoder_position = current_encoder_position
         time.sleep(0.05)
 
-    # --- Figma ---- ---- ---- ---- ---- ---- ---- ---- ---- ----
+    # --- [1] Figma ---- ---- ---- ---- ---- ---- ---- ---- ---- ----
     if current_key_set == 1:
-        row1Label.text = "Figma [1]     RS-MP1"
+        row1Label.text = "[1] Figma     RS-MP1"
         row2Label.text = "[X]    LIB    GOMAIN"
         row3Label.text = "CPLINK LIB    SELECT"
 
@@ -203,33 +196,15 @@ while True:
                         macropad.Keycode.COMMAND, macropad.Keycode.L
                     )
                     macropad.keyboard.release_all()
-        if macropad.encoder_switch:
+        macropad.encoder_switch_debounced.update()
+        if macropad.encoder_switch_debounced.pressed:
             # Zoom to 100%
-            macropad.keyboard.press(macropad.Keycode.COMMAND, macropad.Keycode.ZEROI)
+            macropad.keyboard.press(macropad.Keycode.COMMAND, macropad.Keycode.ZERO)
             macropad.keyboard.release_all()
 
-    # --- Teams ---- ---- ---- ---- ---- ---- ---- ---- ---- ----
-    if current_key_set == 9:
-        row1Label.text = "Teams [9]      RS-MP1"
-        row2Label.text = "[X]    XX     XX   "
-        row3Label.text = "XX     XX     XX   "
-        row4Label.text = "XX     MUTE   XX   "
-        if key_event:
-            if key_event.pressed:
-                if key_event.key_number == 0:
-                    current_key_set = 0
-                    macropad.keyboard.release_all()
-                if key_event.key_number == 10:
-                    macropad.keyboard.press(
-                        macropad.Keycode.LEFT_SHIFT,
-                        macropad.Keycode.COMMAND,
-                        macropad.Keycode.M,
-                    )
-                    macropad.keyboard.release_all()
-
-    # --- X4 ---- ---- ---- ---- ---- ---- ---- ---- ---- ----
-    if current_key_set == 10:
-        row1Label.text = "X4 [10]       RS-MP1"
+    # --- [02] ---- ---- ---- ---- ---- ---- ---- ---- ---- ----
+    if current_key_set == 2:
+        row1Label.text = "[2] Empty    RS-MP1"
         row2Label.text = "[ x ]  [ x ]  [ x ]"
         row3Label.text = "[ x ]  [ x ]  [ x ]"
         row4Label.text = "[ x ]  [ x ]  [ x ]"
@@ -240,14 +215,417 @@ while True:
                     current_key_set = 0
                     macropad.keyboard.release_all()
                 if key_event.key_number == 1:
-                    macropad.keyboard.press(
-                        macropad.Keycode.LEFT_SHIFT, macropad.Keycode.I
-                    )
+                    macropad.keyboard.press()
                     macropad.keyboard.release_all()
                 if key_event.key_number == 2:
+                    macropad.keyboard.press()
+                    macropad.keyboard.release_all()
+                if key_event.key_number == 3:
+                    macropad.keyboard.press()
+                    macropad.keyboard.release_all()
+                if key_event.key_number == 4:
+                    macropad.keyboard.press()
+                    macropad.keyboard.release_all()
+                if key_event.key_number == 5:
+                    macropad.keyboard.press()
+                    macropad.keyboard.release_all()
+                if key_event.key_number == 6:
+                    macropad.keyboard.press()
+                    macropad.keyboard.release_all()
+                if key_event.key_number == 7:
+                    macropad.keyboard.press()
+                    macropad.keyboard.release_all()
+                if key_event.key_number == 8:
+                    macropad.keyboard.press()
+                    macropad.keyboard.release_all()
+                if key_event.key_number == 9:
+                    macropad.keyboard.press()
+                    macropad.keyboard.release_all()
+                if key_event.key_number == 10:
+                    macropad.keyboard.press()
+                    macropad.keyboard.release_all()
+                if key_event.key_number == 11:
+                    macropad.keyboard.press()
+                    macropad.keyboard.release_all()
+
+    # --- [03] ---- ---- ---- ---- ---- ---- ---- ---- ---- ----
+    if current_key_set == 3:
+        row1Label.text = "[3] Empty    RS-MP1"
+        row2Label.text = "[ x ]  [ x ]  [ x ]"
+        row3Label.text = "[ x ]  [ x ]  [ x ]"
+        row4Label.text = "[ x ]  [ x ]  [ x ]"
+        row5Label.text = "[ x ]  [ x ]  [ x ]"
+        if key_event:
+            if key_event.pressed:
+                if key_event.key_number == 0:
+                    current_key_set = 0
+                    macropad.keyboard.release_all()
+                if key_event.key_number == 1:
+                    macropad.keyboard.press()
+                    macropad.keyboard.release_all()
+                if key_event.key_number == 2:
+                    macropad.keyboard.press()
+                    macropad.keyboard.release_all()
+                if key_event.key_number == 3:
+                    macropad.keyboard.press()
+                    macropad.keyboard.release_all()
+                if key_event.key_number == 4:
+                    macropad.keyboard.press()
+                    macropad.keyboard.release_all()
+                if key_event.key_number == 5:
+                    macropad.keyboard.press()
+                    macropad.keyboard.release_all()
+                if key_event.key_number == 6:
+                    macropad.keyboard.press()
+                    macropad.keyboard.release_all()
+                if key_event.key_number == 7:
+                    macropad.keyboard.press()
+                    macropad.keyboard.release_all()
+                if key_event.key_number == 8:
+                    macropad.keyboard.press()
+                    macropad.keyboard.release_all()
+                if key_event.key_number == 9:
+                    macropad.keyboard.press()
+                    macropad.keyboard.release_all()
+                if key_event.key_number == 10:
+                    macropad.keyboard.press()
+                    macropad.keyboard.release_all()
+                if key_event.key_number == 11:
+                    macropad.keyboard.press()
+                    macropad.keyboard.release_all()
+                    
+    # --- [04] ---- ---- ---- ---- ---- ---- ---- ---- ---- ----
+    if current_key_set == 4:
+        row1Label.text = "[4] Empty    RS-MP1"
+        row2Label.text = "[ x ]  [ x ]  [ x ]"
+        row3Label.text = "[ x ]  [ x ]  [ x ]"
+        row4Label.text = "[ x ]  [ x ]  [ x ]"
+        row5Label.text = "[ x ]  [ x ]  [ x ]"
+        if key_event:
+            if key_event.pressed:
+                if key_event.key_number == 0:
+                    current_key_set = 0
+                    macropad.keyboard.release_all()
+                if key_event.key_number == 1:
+                    macropad.keyboard.press()
+                    macropad.keyboard.release_all()
+                if key_event.key_number == 2:
+                    macropad.keyboard.press()
+                    macropad.keyboard.release_all()
+                if key_event.key_number == 3:
+                    macropad.keyboard.press()
+                    macropad.keyboard.release_all()
+                if key_event.key_number == 4:
+                    macropad.keyboard.press()
+                    macropad.keyboard.release_all()
+                if key_event.key_number == 5:
+                    macropad.keyboard.press()
+                    macropad.keyboard.release_all()
+                if key_event.key_number == 6:
+                    macropad.keyboard.press()
+                    macropad.keyboard.release_all()
+                if key_event.key_number == 7:
+                    macropad.keyboard.press()
+                    macropad.keyboard.release_all()
+                if key_event.key_number == 8:
+                    macropad.keyboard.press()
+                    macropad.keyboard.release_all()
+                if key_event.key_number == 9:
+                    macropad.keyboard.press()
+                    macropad.keyboard.release_all()
+                if key_event.key_number == 10:
+                    macropad.keyboard.press()
+                    macropad.keyboard.release_all()
+                if key_event.key_number == 11:
+                    macropad.keyboard.press()
+                    macropad.keyboard.release_all()
+                    
+    # --- [05] ---- ---- ---- ---- ---- ---- ---- ---- ---- ----
+    if current_key_set == 5:
+        row1Label.text = "[5] Empty    RS-MP1"
+        row2Label.text = "[ x ]  [ x ]  [ x ]"
+        row3Label.text = "[ x ]  [ x ]  [ x ]"
+        row4Label.text = "[ x ]  [ x ]  [ x ]"
+        row5Label.text = "[ x ]  [ x ]  [ x ]"
+        if key_event:
+            if key_event.pressed:
+                if key_event.key_number == 0:
+                    current_key_set = 0
+                    macropad.keyboard.release_all()
+                if key_event.key_number == 1:
+                    macropad.keyboard.press()
+                    macropad.keyboard.release_all()
+                if key_event.key_number == 2:
+                    macropad.keyboard.press()
+                    macropad.keyboard.release_all()
+                if key_event.key_number == 3:
+                    macropad.keyboard.press()
+                    macropad.keyboard.release_all()
+                if key_event.key_number == 4:
+                    macropad.keyboard.press()
+                    macropad.keyboard.release_all()
+                if key_event.key_number == 5:
+                    macropad.keyboard.press()
+                    macropad.keyboard.release_all()
+                if key_event.key_number == 6:
+                    macropad.keyboard.press()
+                    macropad.keyboard.release_all()
+                if key_event.key_number == 7:
+                    macropad.keyboard.press()
+                    macropad.keyboard.release_all()
+                if key_event.key_number == 8:
+                    macropad.keyboard.press()
+                    macropad.keyboard.release_all()
+                if key_event.key_number == 9:
+                    macropad.keyboard.press()
+                    macropad.keyboard.release_all()
+                if key_event.key_number == 10:
+                    macropad.keyboard.press()
+                    macropad.keyboard.release_all()
+                if key_event.key_number == 11:
+                    macropad.keyboard.press()
+                    macropad.keyboard.release_all()
+                    
+    # --- [06] ---- ---- ---- ---- ---- ---- ---- ---- ---- ----
+    if current_key_set == 6:
+        row1Label.text = "[6] Empty    RS-MP1"
+        row2Label.text = "[ x ]  [ x ]  [ x ]"
+        row3Label.text = "[ x ]  [ x ]  [ x ]"
+        row4Label.text = "[ x ]  [ x ]  [ x ]"
+        row5Label.text = "[ x ]  [ x ]  [ x ]"
+        if key_event:
+            if key_event.pressed:
+                if key_event.key_number == 0:
+                    current_key_set = 0
+                    macropad.keyboard.release_all()
+                if key_event.key_number == 1:
+                    macropad.keyboard.press()
+                    macropad.keyboard.release_all()
+                if key_event.key_number == 2:
+                    macropad.keyboard.press()
+                    macropad.keyboard.release_all()
+                if key_event.key_number == 3:
+                    macropad.keyboard.press()
+                    macropad.keyboard.release_all()
+                if key_event.key_number == 4:
+                    macropad.keyboard.press()
+                    macropad.keyboard.release_all()
+                if key_event.key_number == 5:
+                    macropad.keyboard.press()
+                    macropad.keyboard.release_all()
+                if key_event.key_number == 6:
+                    macropad.keyboard.press()
+                    macropad.keyboard.release_all()
+                if key_event.key_number == 7:
+                    macropad.keyboard.press()
+                    macropad.keyboard.release_all()
+                if key_event.key_number == 8:
+                    macropad.keyboard.press()
+                    macropad.keyboard.release_all()
+                if key_event.key_number == 9:
+                    macropad.keyboard.press()
+                    macropad.keyboard.release_all()
+                if key_event.key_number == 10:
+                    macropad.keyboard.press()
+                    macropad.keyboard.release_all()
+                if key_event.key_number == 11:
+                    macropad.keyboard.press()
+                    macropad.keyboard.release_all()
+                    
+    # --- [07] ---- ---- ---- ---- ---- ---- ---- ---- ---- ----
+    if current_key_set == 7:
+        row1Label.text = "[7] Empty    RS-MP1"
+        row2Label.text = "[ x ]  [ x ]  [ x ]"
+        row3Label.text = "[ x ]  [ x ]  [ x ]"
+        row4Label.text = "[ x ]  [ x ]  [ x ]"
+        row5Label.text = "[ x ]  [ x ]  [ x ]"
+        if key_event:
+            if key_event.pressed:
+                if key_event.key_number == 0:
+                    current_key_set = 0
+                    macropad.keyboard.release_all()
+                if key_event.key_number == 1:
+                    macropad.keyboard.press()
+                    macropad.keyboard.release_all()
+                if key_event.key_number == 2:
+                    macropad.keyboard.press()
+                    macropad.keyboard.release_all()
+                if key_event.key_number == 3:
+                    macropad.keyboard.press()
+                    macropad.keyboard.release_all()
+                if key_event.key_number == 4:
+                    macropad.keyboard.press()
+                    macropad.keyboard.release_all()
+                if key_event.key_number == 5:
+                    macropad.keyboard.press()
+                    macropad.keyboard.release_all()
+                if key_event.key_number == 6:
+                    macropad.keyboard.press()
+                    macropad.keyboard.release_all()
+                if key_event.key_number == 7:
+                    macropad.keyboard.press()
+                    macropad.keyboard.release_all()
+                if key_event.key_number == 8:
+                    macropad.keyboard.press()
+                    macropad.keyboard.release_all()
+                if key_event.key_number == 9:
+                    macropad.keyboard.press()
+                    macropad.keyboard.release_all()
+                if key_event.key_number == 10:
+                    macropad.keyboard.press()
+                    macropad.keyboard.release_all()
+                if key_event.key_number == 11:
+                    macropad.keyboard.press()
+                    macropad.keyboard.release_all()
+                    
+    # --- [08] ---- ---- ---- ---- ---- ---- ---- ---- ---- ----
+    if current_key_set == 8:
+        row1Label.text = "[8] Empty    RS-MP1"
+        row2Label.text = "[ x ]  [ x ]  [ x ]"
+        row3Label.text = "[ x ]  [ x ]  [ x ]"
+        row4Label.text = "[ x ]  [ x ]  [ x ]"
+        row5Label.text = "[ x ]  [ x ]  [ x ]"
+        if key_event:
+            if key_event.pressed:
+                if key_event.key_number == 0:
+                    current_key_set = 0
+                    macropad.keyboard.release_all()
+                if key_event.key_number == 1:
+                    macropad.keyboard.press()
+                    macropad.keyboard.release_all()
+                if key_event.key_number == 2:
+                    macropad.keyboard.press()
+                    macropad.keyboard.release_all()
+                if key_event.key_number == 3:
+                    macropad.keyboard.press()
+                    macropad.keyboard.release_all()
+                if key_event.key_number == 4:
+                    macropad.keyboard.press()
+                    macropad.keyboard.release_all()
+                if key_event.key_number == 5:
+                    macropad.keyboard.press()
+                    macropad.keyboard.release_all()
+                if key_event.key_number == 6:
+                    macropad.keyboard.press()
+                    macropad.keyboard.release_all()
+                if key_event.key_number == 7:
+                    macropad.keyboard.press()
+                    macropad.keyboard.release_all()
+                if key_event.key_number == 8:
+                    macropad.keyboard.press()
+                    macropad.keyboard.release_all()
+                if key_event.key_number == 9:
+                    macropad.keyboard.press()
+                    macropad.keyboard.release_all()
+                if key_event.key_number == 10:
+                    macropad.keyboard.press()
+                    macropad.keyboard.release_all()
+                if key_event.key_number == 11:
+                    macropad.keyboard.press()
+                    macropad.keyboard.release_all()
+                    
+    # --- [09] Teams ---- ---- ---- ---- ---- ---- ---- ---- ---- ----
+    if current_key_set == 9:
+        row1Label.text = "[9] Teams    RS-MP1"
+        row2Label.text = "[ x ]  [ x ]  [ x ]"
+        row3Label.text = "[ x ]  [ x ]  [ x ]"
+        row4Label.text = "[ x ]  [ x ]  [ x ]"
+        row5Label.text = "[ x ]  MUTE   [ x ]"
+        if key_event:
+            if key_event.pressed:
+                if key_event.key_number == 0:
+                    current_key_set = 0
+                    macropad.keyboard.release_all()
+                if key_event.key_number == 1:
+                    macropad.keyboard.press()
+                    macropad.keyboard.release_all()
+                if key_event.key_number == 2:
+                    macropad.keyboard.press()
+                    macropad.keyboard.release_all()
+                if key_event.key_number == 3:
+                    macropad.keyboard.press()
+                    macropad.keyboard.release_all()
+                if key_event.key_number == 4:
+                    macropad.keyboard.press()
+                    macropad.keyboard.release_all()
+                if key_event.key_number == 5:
+                    macropad.keyboard.press()
+                    macropad.keyboard.release_all()
+                if key_event.key_number == 6:
+                    macropad.keyboard.press()
+                    macropad.keyboard.release_all()
+                if key_event.key_number == 7:
+                    macropad.keyboard.press()
+                    macropad.keyboard.release_all()
+                if key_event.key_number == 8:
+                    macropad.keyboard.press()
+                    macropad.keyboard.release_all()
+                if key_event.key_number == 9:
+                    macropad.keyboard.press()
+                    macropad.keyboard.release_all()
+                if key_event.key_number == 10:
                     macropad.keyboard.press(
-                        macropad.Keycode.CONTROL, macropad.Keycode.G
+                        macropad.Keycode.LEFT_SHIFT,
+                        macropad.Keycode.COMMAND,
+                        macropad.Keycode.M,
                     )
+                    macropad.keyboard.release_all()
+                if key_event.key_number == 11:
+                    macropad.keyboard.press()
+                    macropad.keyboard.release_all()
+
+                if key_event.key_number == 10:
+                    macropad.keyboard.press(
+                        macropad.Keycode.LEFT_SHIFT,
+                        macropad.Keycode.COMMAND,
+                        macropad.Keycode.M,
+                    )
+                    macropad.keyboard.release_all()
+
+    # --- [10] ---- ---- ---- ---- ---- ---- ---- ---- ---- ----
+    if current_key_set == 10:
+        row1Label.text = "[10] Empty    RS-MP1"
+        row2Label.text = "[ x ]  [ x ]  [ x ]"
+        row3Label.text = "[ x ]  [ x ]  [ x ]"
+        row4Label.text = "[ x ]  [ x ]  [ x ]"
+        row5Label.text = "[ x ]  [ x ]  [ x ]"
+        if key_event:
+            if key_event.pressed:
+                if key_event.key_number == 0:
+                    current_key_set = 0
+                    macropad.keyboard.release_all()
+                if key_event.key_number == 1:
+                    macropad.keyboard.press()
+                    macropad.keyboard.release_all()
+                if key_event.key_number == 2:
+                    macropad.keyboard.press()
+                    macropad.keyboard.release_all()
+                if key_event.key_number == 3:
+                    macropad.keyboard.press()
+                    macropad.keyboard.release_all()
+                if key_event.key_number == 4:
+                    macropad.keyboard.press()
+                    macropad.keyboard.release_all()
+                if key_event.key_number == 5:
+                    macropad.keyboard.press()
+                    macropad.keyboard.release_all()
+                if key_event.key_number == 6:
+                    macropad.keyboard.press()
+                    macropad.keyboard.release_all()
+                if key_event.key_number == 7:
+                    macropad.keyboard.press()
+                    macropad.keyboard.release_all()
+                if key_event.key_number == 8:
+                    macropad.keyboard.press()
+                    macropad.keyboard.release_all()
+                if key_event.key_number == 9:
+                    macropad.keyboard.press()
+                    macropad.keyboard.release_all()
+                if key_event.key_number == 10:
+                    macropad.keyboard.press()
+                    macropad.keyboard.release_all()
+                if key_event.key_number == 11:
+                    macropad.keyboard.press()
                     macropad.keyboard.release_all()
 
     # --- MATRIX ---- ---- ---- ---- ---- ----
@@ -267,7 +645,7 @@ while True:
 
         column = get_random_column()
         print(column)
-        time.sleep(1)
+        time.sleep(0.01)
 
         def rain(speed, a, b, c, d):
             macropad.pixels[a] = green
@@ -287,3 +665,49 @@ while True:
     if turnPixelsOff is True:
         pixels_off()
         turnPixelsOff = False
+
+    # --- [XX] EMPTY TEMPLATE ---- ---- ---- ---- ---- ---- ---- ---- ---- ----
+    if current_key_set == 99:
+        row1Label.text = "[X] Empty    RS-MP1"
+        row2Label.text = "[ x ]  [ x ]  [ x ]"
+        row3Label.text = "[ x ]  [ x ]  [ x ]"
+        row4Label.text = "[ x ]  [ x ]  [ x ]"
+        row5Label.text = "[ x ]  [ x ]  [ x ]"
+        if key_event:
+            if key_event.pressed:
+                if key_event.key_number == 0:
+                    current_key_set = 0
+                    macropad.keyboard.release_all()
+                if key_event.key_number == 1:
+                    macropad.keyboard.press()
+                    macropad.keyboard.release_all()
+                if key_event.key_number == 2:
+                    macropad.keyboard.press()
+                    macropad.keyboard.release_all()
+                if key_event.key_number == 3:
+                    macropad.keyboard.press()
+                    macropad.keyboard.release_all()
+                if key_event.key_number == 4:
+                    macropad.keyboard.press()
+                    macropad.keyboard.release_all()
+                if key_event.key_number == 5:
+                    macropad.keyboard.press()
+                    macropad.keyboard.release_all()
+                if key_event.key_number == 6:
+                    macropad.keyboard.press()
+                    macropad.keyboard.release_all()
+                if key_event.key_number == 7:
+                    macropad.keyboard.press()
+                    macropad.keyboard.release_all()
+                if key_event.key_number == 8:
+                    macropad.keyboard.press()
+                    macropad.keyboard.release_all()
+                if key_event.key_number == 9:
+                    macropad.keyboard.press()
+                    macropad.keyboard.release_all()
+                if key_event.key_number == 10:
+                    macropad.keyboard.press()
+                    macropad.keyboard.release_all()
+                if key_event.key_number == 11:
+                    macropad.keyboard.press()
+                    macropad.keyboard.release_all()
