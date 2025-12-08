@@ -1,3 +1,4 @@
+# Simple example that lights up some keys and displays events
 import time
 from adafruit_macropad import MacroPad
 
@@ -20,6 +21,12 @@ while True:
         if key_event.key_number == 0:
             macropad.keyboard.press(macropad.Keycode.F15)
             macropad.keyboard.release_all()
+    
+    # Encoder  
+    macropad.encoder_switch_debounced.update() # update encoder button state every loop
+    
+    if macropad.encoder_switch_debounced.fell:
+        print("Encoder pressed")
 
     if position > last_position:
         macropad.keyboard.release_all()
@@ -29,5 +36,6 @@ while True:
         macropad.keyboard.release_all()
         print("Dial position: ", position)
 
-    time.sleep(0.3)
+    # Sleep for 10ms
+    time.sleep(0.01)
     last_position = position
